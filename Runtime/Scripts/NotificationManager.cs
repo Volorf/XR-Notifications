@@ -60,13 +60,20 @@ namespace Volorf.VRNotifications
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             Debug.Log("Time: " + stopWatch.ElapsedMilliseconds);
-            await Task.Delay(5000);
+            await Task.Delay(10000);
             stopWatch.Stop();
             Debug.Log("Time: " + stopWatch.ElapsedMilliseconds);
+
+            if (Camera.main != null)
+            {
+                _camera = Camera.main.transform;
+            } 
+            else
+            {
+                _camera = Camera.current.transform;
+            }
             
-            // if (Camera.main != null) _camera = Camera.main.transform;
-            _camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
-            // UICanvas.transform.localScale = Vector3.zero;
+            UICanvas.transform.localScale = Vector3.zero;
             
             if (_settings.showWelcomeMessageAtStart)
             {

@@ -55,14 +55,14 @@ namespace Volorf.VRNotifications
             }
         }
         
-        private async void Start()
+        private void Start()
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-            Debug.Log("Time: " + stopWatch.ElapsedMilliseconds);
-            await Task.Delay(10000);
-            stopWatch.Stop();
-            Debug.Log("Time: " + stopWatch.ElapsedMilliseconds);
+            // Stopwatch stopWatch = new Stopwatch();
+            // stopWatch.Start();
+            // Debug.Log("Time: " + stopWatch.ElapsedMilliseconds);
+            // await Task.Delay(1000);
+            // stopWatch.Stop();
+            // Debug.Log("Time: " + stopWatch.ElapsedMilliseconds);
 
             if (Camera.main != null)
             {
@@ -70,7 +70,7 @@ namespace Volorf.VRNotifications
             } 
             else
             {
-                _camera = Camera.current.transform;
+                _camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
             }
             
             UICanvas.transform.localScale = Vector3.zero;

@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 namespace Volorf.VRNotifications
 {
@@ -55,10 +57,16 @@ namespace Volorf.VRNotifications
         
         private async void Start()
         {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            Debug.Log("Time: " + stopWatch.ElapsedMilliseconds);
             await Task.Delay(5000);
+            stopWatch.Stop();
+            Debug.Log("Time: " + stopWatch.ElapsedMilliseconds);
             
-            if (Camera.main != null) _camera = Camera.main.transform;
-            UICanvas.transform.localScale = Vector3.zero;
+            // if (Camera.main != null) _camera = Camera.main.transform;
+            _camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
+            // UICanvas.transform.localScale = Vector3.zero;
             
             if (_settings.showWelcomeMessageAtStart)
             {

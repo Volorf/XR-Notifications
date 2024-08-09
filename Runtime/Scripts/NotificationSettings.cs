@@ -28,5 +28,8 @@ namespace Volorf.VRNotifications
         public NotificationStyle defaultNotificationStyle;
         public NotificationStyle warningNotificationStyle;
         public NotificationStyle errorNotificationStyle;
+
+        [Space(10)] 
+        public bool printDebugMessages;
     }
 }

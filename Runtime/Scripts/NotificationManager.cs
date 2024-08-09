@@ -20,8 +20,9 @@ namespace Volorf.VRNotifications
 
         private static NotificationManager _notificationManager;
 
+        [FormerlySerializedAs("NotificationSettings")]
         [Header("Settings")]
-        [SerializeField] private NotificationSettings NotificationSettings;
+        [SerializeField] private NotificationSettings _settings;
 
         [FormerlySerializedAs("UpdateElementsSizeInstance")]
         [Header("Elements")]
@@ -68,6 +69,10 @@ namespace Volorf.VRNotifications
 
         public void SendMessage(string message, NotificationType type)
         {
+            if (_settings.printDebugMessages)
+            {
+                Debug.Log(message);
+            }
             Notification notification = new Notification(message, type);
             AddMessageToQueue(notification);
         }
@@ -75,6 +80,11 @@ namespace Volorf.VRNotifications
         public void SendMessage(string message, string subMessage, NotificationType type = NotificationType.Info)
         {
             string finalMessage = $"{message} \n<alpha=#33>{subMessage}";
+            
+            if (_settings.printDebugMessages)
+            {
+                Debug.Log(finalMessage);
+            }
             
             Notification notification = new Notification(finalMessage, type);
             AddMessageToQueue(notification);
@@ -99,7 +109,7 @@ namespace Volorf.VRNotifications
             {
                 StartCoroutine(ExecuteNotifications());
                 
-                if (NotificationSettings.FollowHead)
+                if (_settings.FollowHead)
                 {
                     StartCoroutine(FollowHead());
                 }
@@ -113,16 +123,16 @@ namespace Volorf.VRNotifications
             switch (notification.Type)
             {
                 case NotificationType.Info:
-                    BackgroundImage.color = NotificationSettings.defaultNotificationStyle.backgroundColor;
-                    MessageLabel.color = NotificationSettings.defaultNotificationStyle.messageColor;
+                    BackgroundImage.color = _settings.defaultNotificationStyle.backgroundColor;
+                    MessageLabel.color = _settings.defaultNotificationStyle.messageColor;
                     break;
                 case NotificationType.Warning:
-                    BackgroundImage.color = NotificationSettings.warningNotificationStyle.backgroundColor;
-                    MessageLabel.color = NotificationSettings.warningNotificationStyle.messageColor;
+                    BackgroundImage.color = _settings.warningNotificationStyle.backgroundColor;
+                    MessageLabel.color = _settings.warningNotificationStyle.messageColor;
                     break;
                 case NotificationType.Error:
-                    BackgroundImage.color = NotificationSettings.errorNotificationStyle.backgroundColor;
-                    MessageLabel.color = NotificationSettings.errorNotificationStyle.messageColor;
+                    BackgroundImage.color = _settings.errorNotificationStyle.backgroundColor;
+                    MessageLabel.color = _settings.errorNotificationStyle.messageColor;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -141,9 +151,9 @@ namespace Volorf.VRNotifications
             Action callback = delegate { HideMessage(notification); };
             StartCoroutine(MessageAnimation(
                 Vector3.one,
-                NotificationSettings.toShowDuration, 
+                _settings.toShowDuration, 
                 0f,
-                NotificationSettings.showCurve, 
+                _settings.showCurve, 
                 callback));
         }
 
@@ -152,9 +162,9 @@ namespace Volorf.VRNotifications
             Action callback = delegate { TurnOffElements(); };
             StartCoroutine(MessageAnimation(
                 Vector3.zero, 
-                NotificationSettings.toHideDuration,
-                NotificationSettings.defaultDuration, 
-                NotificationSettings.hideCurve, 
+                _settings.toHideDuration,
+                _settings.defaultDuration, 
+                _settings.hideCurve, 
                 callback));
         }
 
@@ -180,7 +190,7 @@ namespace Volorf.VRNotifications
         {
             Vector3 forwardDir;
 
-            if (NotificationSettings.IsOffsetRelative)
+            if (_settings.IsOffsetRelative)
             {
                 forwardDir = _camera.forward;
             }
@@ -189,7 +199,7 @@ namespace Volorf.VRNotifications
                 forwardDir =  new Vector3(_camera.forward.x, 0f, _camera.forward.z).normalized;
             }
             
-            return _camera.position + forwardDir * NotificationSettings.distanceFromHead + _camera.up * -1f * NotificationSettings.downOffset;
+            return _camera.position + forwardDir * _settings.distanceFromHead + _camera.up * -1f * _settings.downOffset;
         }
 
         private IEnumerator ExecuteNotifications()
@@ -204,7 +214,7 @@ namespace Volorf.VRNotifications
                     ShowMessage(messageToShow);
                 }
                 
-                yield return new WaitForSeconds(NotificationSettings.checkingFrequency);
+                yield return new WaitForSeconds(_settings.checkingFrequency);
             }
             
             _isNotificationExecutorRunning = false;
@@ -223,10 +233,10 @@ namespace Volorf.VRNotifications
             {
                 Vector3 newPos = CalculateSnackBarPosition();
                 transform.position = Vector3.SmoothDamp(transform.position, newPos,
-                    ref _smoothPositionVelocity, NotificationSettings.followHeadSmoothKoef);
+                    ref _smoothPositionVelocity, _settings.followHeadSmoothKoef);
 
                 Vector3 newForward = (_camera.position - transform.position).normalized;
-                transform.forward = Vector3.SmoothDamp(transform.forward, newForward, ref _smoothForwardVelocity, NotificationSettings.lookAtHeadSmoothKoef);
+                transform.forward = Vector3.SmoothDamp(transform.forward, newForward, ref _smoothForwardVelocity, _settings.lookAtHeadSmoothKoef);
                 
                 yield return null;
             }

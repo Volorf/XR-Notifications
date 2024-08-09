@@ -30,6 +30,7 @@ namespace Volorf.VRNotifications
         public NotificationStyle errorNotificationStyle;
 
         [Space(10)] 
+        public bool showWelcomeMessageAtStart;
         public bool printDebugMessages;
     }
 }

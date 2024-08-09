@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Serialization;
@@ -52,10 +53,17 @@ namespace Volorf.VRNotifications
             }
         }
         
-        private void Start()
+        private async void Start()
         {
+            await Task.Delay(5000);
+            
             if (Camera.main != null) _camera = Camera.main.transform;
             UICanvas.transform.localScale = Vector3.zero;
+            
+            if (_settings.showWelcomeMessageAtStart)
+            {
+                SendMessage("Welcome to VR Notification System!", NotificationType.Info);
+            }
         }
 
         [ContextMenu("Send Debug Message")]
